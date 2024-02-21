@@ -1,3 +1,5 @@
+// JavaScript file (image-click-tracking.js)
+
 jQuery(document).ready(function($) {
     // Track image clicks
     $('img').on('click', function() {
@@ -10,11 +12,11 @@ jQuery(document).ready(function($) {
         
         // Send data to server via AJAX
         $.ajax({
-            url: ajaxurl, // WordPress AJAX URL
+            url: ajax_object.ajaxurl, // WordPress AJAX URL
             type: 'POST',
             data: {
                 action: 'track_image_click',
-                nonce: my_ajax_obj.nonce,
+                nonce: ajax_object.nonce,
                 imageSrc: imageSrc,
                 altText: altText,
                 postID: postID // Include post ID in the data
