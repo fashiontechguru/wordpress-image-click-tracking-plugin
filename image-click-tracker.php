@@ -2,7 +2,7 @@
 /*
 Plugin Name: Image Click Tracker
 Description: Track image clicks and export data to a CSV file.
-Version: 1.2
+Version: 1.2.1
 Author: FashionTechGuru
 License: MIT
 */
@@ -18,6 +18,13 @@ function enqueue_image_click_tracking_script() {
     wp_enqueue_script('image-click-tracking', plugins_url('/javascript/image-click-tracking.js', __FILE__), array('jquery'), '1.0', true);
 }
 add_action('wp_enqueue_scripts', 'enqueue_image_click_tracking_script');
+
+// Initialize $wpdb
+global $wpdb;
+if (!isset($wpdb)) {
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    $wpdb = new wpdb(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
+}
 
 // Create database table on plugin activation
 function create_tracking_table() {
@@ -52,7 +59,6 @@ function create_tracking_table() {
         error_log('Tracking table already exists.');
     }
 }
-
 
 // Register the create_tracking_table function to run on plugin activation
 register_activation_hook(__FILE__, 'create_tracking_table');
