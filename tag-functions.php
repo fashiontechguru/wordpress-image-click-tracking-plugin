@@ -1,12 +1,5 @@
 <?php
 
-// Retrieve tags associated with images and posts
-
-// Function to retrieve tags associated with an image
-function get_tags_for_image($image_url) {
-    // Your implementation to retrieve tags for an image
-}
-
 // Function to retrieve tags associated with a post
 function get_tags_for_post($post_id) {
     $postTags = array();
