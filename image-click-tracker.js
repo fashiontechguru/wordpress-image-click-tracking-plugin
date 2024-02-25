@@ -1,85 +1,60 @@
-add_action('wp_loaded', 'track_image_clicks');
-add_action('wp_loaded', 'track_image_loads');
-add_action('wp_mouseover', 'track_image_hover');
+jQuery(document).ready(function($) {
 
-function track_image_clicks() {
-    ?>
-    <script>
-        jQuery(document).ready(function($) {
-            $(document).on('click', 'img', function() {
-                var imageData = {
-                    action: 'track_image_click',
-                    nonce: <?php echo wp_create_nonce('track_image_click_nonce'); ?>,
-                    image_url: $(this).attr('src')
-                };
+    // Debounce function to limit the rate of function execution
+    function debounce(func, wait) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                func.apply(context, args);
+            }, wait);
+        };
+    }
 
-                $.ajax({
-                    url: <?php echo admin_url('admin-ajax.php'); ?>,
-                    type: 'POST',
-                    data: imageData,
-                    success: function(response) {
-                        console.log('Image click tracked successfully.');
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error tracking image click: ' + error);
-                    }
-                });
-            });
-        });
-    </script>
-    <?php
-}
+    var eventData = []; // Array to store both click and load data for batching
+    var batchSendDelay = 5000; // Delay in milliseconds to send data, e.g., every 5 seconds
 
-function track_image_loads() {
-    ?>
-    <script>
-        jQuery(window).on('load', function() {
-            $('img').each(function() {
-                var imageData = {
-                    action: 'track_image_load',
-                    nonce: <?php echo wp_create_nonce('track_image_load_nonce'); ?>,
-                    image_url: $(this).attr('src')
-                };
-
-                $.ajax({
-                    url: <?php echo admin_url('admin-ajax.php'); ?>,
-                    type: 'POST',
-                    data: imageData,
-                    success: function(response) {
-                        console.log('Image load tracked successfully.');
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error tracking image load: ' + error);
-                    }
-                });
-            });
-        });
-    </script>
-    <?php
-}
-
-function track_image_hover() {
-    ?>
-    <script>
-        jQuery(document).on('mouseover', 'img', function() {
-            var imageData = {
-                action: 'track_image_hover',
-                nonce: <?php echo wp_create_nonce('track_image_hover_nonce'); ?>,
-                image_url: $(this).attr('src')
-            };
-
+    // Function to handle sending event data in batches
+    function sendEventDataBatch() {
+        if (eventData.length > 0) {
             $.ajax({
-                url: <?php echo admin_url('admin-ajax.php'); ?>,
+                url: ajaxurl,
                 type: 'POST',
-                data: imageData,
-                success: function(response) {
-                    console.log('Image hover tracked successfully.');
+                data: {
+                    action: 'track_image_interaction_batch',
+                    events: eventData,
+                    nonce: imageTracker.nonce
                 },
-                error: function(xhr, status, error) {
-                    console.error('Error tracking image hover: ' + error);
+                success: function(response) {
+                    console.log('Batch event data sent:', eventData);
+                    eventData = []; // Clear the array after sending
+                },
+                error: function(error) {
+                    console.error('Error sending batch event data:', error);
                 }
             });
+        }
+    }
+
+    // Modified event handler for click tracking
+    if (imageTracker.click_tracking_enabled === '1') {
+        $(document).on('click', 'img', function() {
+            var imageSrc = $(this).attr('src');
+            eventData.push({type: 'click', imageSrc: imageSrc, time: Date.now()});
+            debounce(sendEventDataBatch, batchSendDelay)(); // Debounce the batch sending function
         });
-    </script>
-    <?php
-}
+    }
+
+    // Modified event handler for load tracking
+    if (imageTracker.load_tracking_enabled === '1') {
+        $('img').each(function() {
+            $(this).on('load', function() {
+                var imageSrc = $(this).attr('src');
+                eventData.push({type: 'load', imageSrc: imageSrc, time: Date.now()});
+                debounce(sendEventDataBatch, batchSendDelay)(); // Debounce the batch sending function
+            });
+        });
+    }
+
+});
