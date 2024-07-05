@@ -1,0 +1,42 @@
+/* Style for tab links */
+.tablink {
+    /* Add your common styles for tab links here */
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 17px;
+    border: none;
+    outline: none;
+    color: white;
+    background-color: black;
+    transition: background-color 0.3s, font-weight 0.3s;
+}
+
+.tablink:hover {
+    font-weight: bold;
+    /* Adjust hover background color as needed */
+    background-color: #555;
+}
+
+/* Style for active tab link */
+.tablink.active {
+    background-color: #4CAF50; /* Green background for active tabs */
+}
+
+/* Style for tab content */
+.tabcontent {
+    display: none;
+    padding: 20px 20px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.click-paginate-style a {
+    padding: 5px 10px;
+    margin: 2px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+}
+
+.click-paginate-style a:hover {
+    background-color: #eee;
+}

@@ -1,5 +1,8 @@
 <?php
 
+// ERROR TRACKING 
+error_log('Image Click Tracker: START PHP file click_track_widget.php.');
+
 add_action('wp_dashboard_setup', 'click_track_dashboard_widgets');
 
 function click_track_dashboard_widgets() {
@@ -55,4 +58,8 @@ function click_track_dashboard_image_interactions() {
         echo "<p>No monthly data available.</p>";
     }
 }
+
+// ERROR TRACKING 
+error_log('Image Click Tracker: END PHP file click_track_widget.php.');
+
 ?>
