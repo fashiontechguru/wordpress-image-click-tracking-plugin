@@ -1,11 +1,13 @@
 <?php
-/**
+/*
 Plugin Name: Image Click Tracker
 Description: Track image clicks and export data to a CSV file.
 Version: 0.1.1
 Author: FashionTechGuru
 License: MIT
  */
+
+// Debug lines like the one below are meant to be used with the Logdancer plugin: https://github.com/fashiontechguru/WordPress-Logdancer-Plugin  
 
 error_log('Image Click Tracker: START');
 
