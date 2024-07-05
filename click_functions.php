@@ -516,3 +516,34 @@ add_filter('the_content', 'add_image_file_size_to_img_tags');
 
 // ERROR TRACKING 
 image_click_tracker_debug_log('Image Click Tracker: END PHP file click_functions.php.');
+
+function retrieve_image_click_data_prepared($limit, $offset, $date_range, $tags) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'image_clicks';
+
+    // Start constructing the SQL query
+    $sql = $wpdb->prepare("
+        SELECT * FROM $table_name
+        WHERE DATE_SUB(CURDATE(), INTERVAL %d DAY) <= time
+    ", $date_range);
+
+    // Check if there are tags to filter by and add them to the query
+    if (!empty($tags)) {
+        $tag_conditions = [];
+        foreach ($tags as $tag) {
+            // Sanitize each tag for safe inclusion
+            $sanitized_tag = sanitize_text_field($tag);
+            // Use FIND_IN_SET for comma-separated tag values in the 'tags' column
+            $tag_conditions[] = $wpdb->prepare("FIND_IN_SET(%s, tags) > 0", $sanitized_tag);
+        }
+        // Append the tag conditions to the main SQL query
+        $sql .= " AND (" . implode(' OR ', $tag_conditions) . ")";
+    }
+
+    // Append LIMIT and OFFSET to the query
+    $sql .= $wpdb->prepare(" LIMIT %d OFFSET %d", $limit, $offset);
+
+    // Execute the query and return results
+    $results = $wpdb->get_results($sql);
+    return $results;
+}

@@ -56,8 +56,8 @@ add_action('admin_menu', 'image_click_tracker_admin_menu');
 
 function image_click_tracker_admin_menu() {
     // Conditional include within the admin_menu hook to ensure it only runs in admin area
-    include_once IMAGE_CLICK_TRACKER_PLUGIN_DIR . 'click_display.php';    
-    include_once IMAGE_CLICK_TRACKER_PLUGIN_DIR . 'click_display_settings.php';
+    //    
+    //include_once IMAGE_CLICK_TRACKER_PLUGIN_DIR . 'click_display_settings.php';
 
     // Add the top-level admin menu
     $main_page = add_menu_page(
@@ -105,3 +105,7 @@ function image_click_tracker_deactivation() {
 
 // ERROR TRACKING: Log the start of execution for troubleshooting.
 image_click_tracker_debug_log('Image Click Tracker: END PHP file image-click-tracker.php.');
+
+function image_click_tracker_display_page() {
+    include_once IMAGE_CLICK_TRACKER_PLUGIN_DIR . 'click_display.php';
+}
