@@ -26,6 +26,9 @@ function image_click_tracker_register_debug_hooks() {
 
 // Simplified debug log function, with stack trace for context
 function image_click_tracker_debug_log($message) {
+    if ( ! defined('WP_DEBUG_LOG') || ! WP_DEBUG_LOG ) {
+        return;
+    }
     error_log($message);
     // Optionally log stack trace for deeper context
     if (IMAGE_CLICK_TRACKER_DEBUG && apply_filters('image_click_tracker_debug_log_stack_trace', false)) {
