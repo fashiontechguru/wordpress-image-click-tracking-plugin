@@ -1,5 +1,4 @@
 <?php
-
 // ERROR TRACKING 
 image_click_tracker_debug_log('Image Click Tracker: START PHP file click_csv-export.php.');
 
@@ -47,6 +46,3 @@ function handle_csv_export() {
 
 // ERROR TRACKING 
 image_click_tracker_debug_log('Image Click Tracker: END PHP file click_csv-export.php.');
-
-?>
-
